@@ -27,3 +27,27 @@ const preencherFormulario = (endereco) => {
 const eNumero = (Numero) => /^[0-9]+$/.test(Numero);
 
 //confere se o Cep tem o tamanho certo
+const cepValido = (Cep) => Cep.length == 8 && eNumero(Cep);
+
+//Consumo de API viaCep
+const pesquisarCep = async() =>{
+    limparFormulario();
+    const url = `http://viacep.com.br/ws/${Cep.value}/json/`;
+
+    if(cepValido(Cep.value)){
+        const dados = await fetch(url);
+        const addres =await dados.json();
+
+        if(addres.hasOwnPropety('erro')){
+            alert('Cep não encontrado');
+        }
+        else{
+            preencherFormulario(addres);
+        }
+    }
+    else{
+        alert('Cep incorreto');
+    }
+}
+
+document.getElementById('Cep').addEventListener('focuosout',pesquisarCep);

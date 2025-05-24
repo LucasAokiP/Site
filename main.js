@@ -24,6 +24,6 @@ const preencherFormulario = (endereco) => {
 }
 
 //verificaçao se o Cep é valido
-
+const eNumero = (Numero) => /^[0-9]+$/.test(Numero);
 
 //confere se o Cep tem o tamanho certo

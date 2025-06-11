@@ -1,53 +1,37 @@
-//use Strict; Modo restrito
-
-// consumo da API viaCEP
-//https://viacep.com.br/
-
 const limparFormulario = () => {
-    document.getElementById('Nome').value = '';
-    document.getElementById('Email').value = '';
-    document.getElementById('Cpf').value = '';
-    document.getElementById('Cep').value = '';
     document.getElementById('Rua').value = '';
-    document.getElementById('Numero').value = '';
     document.getElementById('Bairro').value = '';
-    document.getElementById('Cidade').value = '';   //mudar o que esta dentro do parenteses pelo Id que esta no html
+    document.getElementById('Cidade').value = '';
     document.getElementById('Uf').value = '';
-}
+};
 
-//funçao para preencher o formulario
 const preencherFormulario = (endereco) => {
     document.getElementById('Rua').value = endereco.logradouro;
     document.getElementById('Bairro').value = endereco.bairro;
     document.getElementById('Cidade').value = endereco.localidade;
     document.getElementById('Uf').value = endereco.uf;
-}
+};
 
-//verificaçao se o Cep é valido
-const eNumero = (Numero) => /^[0-9]+$/.test(Numero);
+const cepValido = (cep) => /^[0-9]{8}$/.test(cep); // Aceita 8 dígitos
 
-//confere se o Cep tem o tamanho certo
-const cepValido = (Cep) => Cep.length == 8 && eNumero(Cep);
-
-//Consumo de API viaCep
-const pesquisarCep = async() =>{
+const pesquisarCep = async () => {
     limparFormulario();
-    const url = `http://viacep.com.br/ws/${Cep.value}/json/`;
+    const cep = document.getElementById('Cep').value;
+    const url = `https:viacep.com.br/ws/${cep}/json/`;
 
-    if(cepValido(Cep.value)){
+    if (cepValido(cep)) {
         const dados = await fetch(url);
-        const addres =await dados.json();
+        const endereco = await dados.json();
 
-        if(addres.hasOwnPropety('erro')){
-            alert('Cep não encontrado');
+        if (endereco.hasOwnProperty('erro')) {
+            alert('CEP não encontrado!');
+        } else {
+            preencherFormulario(endereco);
         }
-        else{
-            preencherFormulario(addres);
-        }
+    } else {
+        alert('CEP inválido!');
     }
-    else{
-        alert('Cep incorreto');
-    }
-}
+};
 
-document.getElementById('Cep').addEventListener('focuosout',pesquisarCep);
+// Adiciona o evento para buscar CEP automaticamente ao perder o foco do campo
+document.getElementById('Cep').addEventListener('blur', pesquisarCep);
